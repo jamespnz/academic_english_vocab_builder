@@ -13,7 +13,7 @@
     <section id="button-container"></section>
     <section id="word-display"></section>
   </main>
-  </body>
+  
 
   <!-- scripts follow -->
 
@@ -124,7 +124,18 @@
     border-collapse: collapse;
   }
 
-  .in-place-table {
+  @keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  }
+
+ .in-place-table {
   width: 100%;
   margin: 20px auto;
   padding: 15px;
@@ -132,8 +143,9 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   border: 2px solid black;
+  animation: fadeIn 0.7s ease-in-out;
 }
-
+  
   /* 📱 Responsive styles */
   @media (max-width: 768px) {
     body {
@@ -166,6 +178,20 @@
       padding: 6px;
     }
   }
+
+  .close-btn {
+  text-align: right;
+  font-size: 1em;
+  color: #555;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: color 0.2s ease-in-out;
+}
+
+.close-btn:hover {
+  color: #c00;
+}
+
 </style>
 
 
@@ -251,9 +277,21 @@ document.addEventListener("DOMContentLoaded", function () {
         newDisplay.id = "word-display";
         newDisplay.className = "in-place-table";
 
-        const table = createTable(batch);
-        newDisplay.appendChild(table);
+        // 🔽 Add Close Button
+const closeBtn = document.createElement("div");
+closeBtn.innerText = "❌ Close";
+closeBtn.className = "close-btn";
+closeBtn.onclick = () => {
+  newDisplay.remove();
+  activeBatchIndex = null;
+};
+newDisplay.appendChild(closeBtn);
 
+// Table
+const table = createTable(batch);
+newDisplay.appendChild(table);
+
+        
         // Insert table directly after this button
         dayBtn.insertAdjacentElement("afterend", newDisplay);
         activeBatchIndex = i;
