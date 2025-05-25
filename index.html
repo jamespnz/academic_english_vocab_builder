@@ -159,86 +159,103 @@
   <!-- ✅ Your JavaScript starts here -->
   <script>
   document.addEventListener("DOMContentLoaded", function () {
-    const wordDisplay = document.getElementById("word-display");
-    const buttonContainer = document.getElementById("button-container");
+  const wordDisplay = document.getElementById("word-display");
+  const buttonContainer = document.getElementById("button-container");
 
-    if (!wordDisplay || !buttonContainer) {
-      console.error("Required DOM elements not found.");
-      return;
-    }
+  if (!wordDisplay || !buttonContainer) {
+    console.error("Required DOM elements not found.");
+    return;
+  }
 
-    wordDisplay.style.display = "none";
+  wordDisplay.style.display = "none";
 
-    fetch("Vocabulary_List_Final_Cleaned.csv")
-      .then(response => response.text())
-      .then(csvData => {
-        const rawData = Papa.parse(csvData, { header: true }).data;
-        const parsedData = rawData.map(row => ({
-          English: row["English"]?.replace(/^[\s\uFEFF\xA0"]+|[\s"]+$/g, "") || "",
-          Japanese: row["Japanese"]?.replace(/^[\s\uFEFF\xA0"]+|[\s"]+$/g, "") || "",
-          Context: row["context"]?.replace(/^[\s\uFEFF\xA0"]+|[\s"]+$/g, "") || ""
-        })).filter(row => row.English && row.Japanese);
+  fetch("Vocabulary_List_Final_Cleaned.csv")
+    .then(response => response.text())
+    .then(csvData => {
+      const rawData = Papa.parse(csvData, { header: true }).data;
+      const parsedData = rawData.map(row => ({
+        English: row["English"]?.trim() || "",
+        Japanese: row["Japanese"]?.trim() || "",
+        Context: row["context"]?.trim() || ""
+      })).filter(row => row.English && row.Japanese);
 
-        console.log("CSV Loaded (cleaned):", parsedData);
+      console.log("CSV Loaded (cleaned):", parsedData);
 
-        const flashcardBtn = document.createElement("button");
-        flashcardBtn.innerText = "Flashcard Mode";
-        flashcardBtn.onclick = () => {
+      const flashcardBtn = document.createElement("button");
+      flashcardBtn.innerText = "Flashcard Mode";
+
+      let flashcardsActive = false;
+
+      flashcardBtn.onclick = () => {
+        if (flashcardsActive) {
+          // Go back to home
+          wordDisplay.innerHTML = "";
+          wordDisplay.style.display = "none";
+          flashcardBtn.innerText = "Flashcard Mode";
+          flashcardsActive = false;
+        } else {
+          // Show flashcards
           displayFlashcards(parsedData);
-        };
-        buttonContainer.appendChild(flashcardBtn);
-      })
-      .catch(error => console.error("Error loading CSV:", error));
-  });
+          flashcardBtn.innerText = "Home";
+          flashcardsActive = true;
+        }
+      };
 
-  function displayFlashcards(wordList) {
-    const wordDisplay = document.getElementById("word-display");
+      buttonContainer.appendChild(flashcardBtn);
+    })
+    .catch(error => console.error("Error loading CSV:", error));
+});
 
-    if (!wordList || wordList.length === 0) {
-      wordDisplay.innerHTML = "<p>No data found.</p>";
-      wordDisplay.style.display = "block";
-      return;
-    }
+function displayFlashcards(wordList) {
+  const wordDisplay = document.getElementById("word-display");
 
-    wordDisplay.innerHTML = "";
+  if (!wordList || wordList.length === 0) {
+    wordDisplay.innerHTML = "<p>No data found.</p>";
     wordDisplay.style.display = "block";
+    return;
+  }
 
-    wordList.forEach(row => {
-      const card = document.createElement("div");
-      card.className = "flashcard";
+  wordDisplay.innerHTML = "";
+  wordDisplay.style.display = "block";
 
-      const english = document.createElement("div");
-      english.innerText = row.English;
-      english.style.fontWeight = "bold";
+  wordList.forEach(row => {
+    const card = document.createElement("div");
+    card.className = "flashcard";
 
-      const japanese = document.createElement("div");
-      japanese.innerText = "日本語";
-      japanese.style.color = "#aaa";
-      japanese.dataset.realValue = row.Japanese;
-      japanese.style.marginTop = "5px";
+    const english = document.createElement("div");
+    english.innerText = row.English;
+    english.style.fontWeight = "bold";
 
-      japanese.addEventListener("click", () => {
-        japanese.innerText = japanese.dataset.realValue;
-        japanese.style.color = "#000";
-      });
+    const japanese = document.createElement("div");
+    japanese.innerText = "日本語";
+    japanese.style.color = "#aaa";
+    japanese.dataset.realValue = row.Japanese;
+    japanese.style.marginTop = "5px";
 
-      const context = document.createElement("div");
-      context.innerText = row.Context || "";
-      context.style.fontStyle = "italic";
-      context.style.fontSize = "0.9em";
-      context.style.marginTop = "5px";
-      context.style.color = "#555";
-
-      card.appendChild(english);
-      card.appendChild(japanese);
-      if (row.Context.trim()) {
-  card.appendChild(context);
-}
-      wordDisplay.appendChild(card);
+    japanese.addEventListener("click", () => {
+      japanese.innerText = japanese.dataset.realValue;
+      japanese.style.color = "#000";
     });
 
-    console.log("✅ Flashcards added to DOM");
-  }
+    const context = document.createElement("div");
+    context.innerText = row.Context || "";
+    context.style.fontStyle = "italic";
+    context.style.fontSize = "0.9em";
+    context.style.marginTop = "5px";
+    context.style.color = "#555";
+
+    card.appendChild(english);
+    card.appendChild(japanese);
+    if (row.Context.trim()) {
+      card.appendChild(context);
+    }
+
+    wordDisplay.appendChild(card);
+  });
+
+  console.log("✅ Flashcards added to DOM");
+}
+
   </script>
 </body>
 </html>
