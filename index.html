@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <body>
+  </head>
+<body>
   <header>
     <h1>Vocabulary Builder</h1>
   </header>
@@ -12,6 +13,7 @@
     <section id="button-container"></section>
     <section id="word-display"></section>
   </main>
+  </body>
 
   <!-- scripts follow -->
 
@@ -77,14 +79,19 @@
   #word-display {
     width: 100%;
     margin: 20px auto;
-    padding: 15px;
+    padding: 12px;
     background: white;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
     border: 2px solid black;
-    display: none;
+    display: block;
     transition: all 0.3s ease-in-out;
   }
+
+  #word-display.show {
+  display: block;
+}
+
 
   .flashcard {
     font-size: 0.95em;
@@ -117,6 +124,16 @@
     border-collapse: collapse;
   }
 
+  .in-place-table {
+  width: 100%;
+  margin: 20px auto;
+  padding: 15px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  border: 2px solid black;
+}
+
   /* 📱 Responsive styles */
   @media (max-width: 768px) {
     body {
@@ -133,9 +150,8 @@
       max-width: 100%;
     }
 
-    #word-display {
-      padding: 12px;
-    }
+   
+
 
     table {
       width: 100%;
@@ -157,8 +173,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
   <!-- ✅ Your JavaScript starts here -->
-  <script>
-  document.addEventListener("DOMContentLoaded", function () {
+ <script>
+document.addEventListener("DOMContentLoaded", function () {
   const wordDisplay = document.getElementById("word-display");
   const buttonContainer = document.getElementById("button-container");
 
@@ -183,79 +199,127 @@
 
       const flashcardBtn = document.createElement("button");
       flashcardBtn.innerText = "Flashcard Mode";
+      buttonContainer.appendChild(flashcardBtn);
 
       let flashcardsActive = false;
+      let activeBatchIndex = null;
 
       flashcardBtn.onclick = () => {
         if (flashcardsActive) {
-          // Go back to home
+          // ⬅ Return to home
           wordDisplay.innerHTML = "";
           wordDisplay.style.display = "none";
           flashcardBtn.innerText = "Flashcard Mode";
           flashcardsActive = false;
+          removeDayButtons();
         } else {
-          // Show flashcards
-          displayFlashcards(parsedData);
+          // ➡ Activate flashcard mode
           flashcardBtn.innerText = "Home";
           flashcardsActive = true;
+          createDayButtons(parsedData);
         }
       };
 
-      buttonContainer.appendChild(flashcardBtn);
+      function removeExistingTable() {
+  const existing = document.querySelector(".in-place-table");
+  if (existing) {
+    existing.remove();
+  }
+}
+
+      function createDayButtons(data) {
+  const batchSize = 10;
+  const totalBatches = Math.floor(data.length / batchSize);
+
+  for (let i = 0; i < totalBatches; i++) {
+    const batch = data.slice(i * batchSize, (i + 1) * batchSize);
+    const dayBtn = document.createElement("button");
+    dayBtn.innerText = `Set ${i + 1}`;
+    dayBtn.classList.add("day-button");
+
+    dayBtn.onclick = () => {
+      if (activeBatchIndex === i) {
+        // Close the table
+        removeExistingTable();
+        activeBatchIndex = null;
+      } else {
+        // Close any existing table
+        removeExistingTable();
+
+        // Create and insert new table
+        const newDisplay = document.createElement("div");
+        newDisplay.id = "word-display";
+        newDisplay.className = "in-place-table";
+
+        const table = createTable(batch);
+        newDisplay.appendChild(table);
+
+        // Insert table directly after this button
+        dayBtn.insertAdjacentElement("afterend", newDisplay);
+        activeBatchIndex = i;
+
+        // Scroll smoothly into view
+        newDisplay.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    buttonContainer.appendChild(dayBtn);
+  }
+}
+
+
+      function createTable(wordList) {
+  const table = document.createElement("table");
+
+  const headerRow = document.createElement("tr");
+  ["English", "Japanese", "Context"].forEach(header => {
+    const th = document.createElement("th");
+    th.innerText = header;
+    headerRow.appendChild(th);
+  });
+  table.appendChild(headerRow);
+
+  wordList.forEach(row => {
+    const tr = document.createElement("tr");
+
+    const tdEnglish = document.createElement("td");
+    tdEnglish.innerText = row.English;
+    tr.appendChild(tdEnglish);
+
+    const tdJapanese = document.createElement("td");
+    tdJapanese.innerText = row.Japanese;
+    tr.appendChild(tdJapanese);
+
+    const tdContext = document.createElement("td");
+    tdContext.innerText = row.Context || "";
+    tr.appendChild(tdContext);
+
+    table.appendChild(tr);
+  });
+
+  console.log("✅ Table is being added to DOM");
+  return table;
+}
+
+
     })
     .catch(error => console.error("Error loading CSV:", error));
 });
 
-function displayFlashcards(wordList) {
-  const wordDisplay = document.getElementById("word-display");
+console.log("✅ Table is being added to DOM");
 
-  if (!wordList || wordList.length === 0) {
-    wordDisplay.innerHTML = "<p>No data found.</p>";
-    wordDisplay.style.display = "block";
-    return;
-  }
+</script>
 
-  wordDisplay.innerHTML = "";
-  wordDisplay.style.display = "block";
 
-  wordList.forEach(row => {
-    const card = document.createElement("div");
-    card.className = "flashcard";
-
-    const english = document.createElement("div");
-    english.innerText = row.English;
-    english.style.fontWeight = "bold";
-
-    const japanese = document.createElement("div");
-    japanese.innerText = "日本語";
-    japanese.style.color = "#aaa";
-    japanese.dataset.realValue = row.Japanese;
-    japanese.style.marginTop = "5px";
-
-    japanese.addEventListener("click", () => {
-      japanese.innerText = japanese.dataset.realValue;
-      japanese.style.color = "#000";
-    });
-
-    const context = document.createElement("div");
-    context.innerText = row.Context || "";
-    context.style.fontStyle = "italic";
-    context.style.fontSize = "0.9em";
-    context.style.marginTop = "5px";
-    context.style.color = "#555";
-
-    card.appendChild(english);
-    card.appendChild(japanese);
-    if (row.Context.trim()) {
-      card.appendChild(context);
-    }
-
-    wordDisplay.appendChild(card);
-  });
-
-  console.log("✅ Flashcards added to DOM");
-}
-
-  </script>
 </body>
 </html>
+
+<!-- Commands for updating files in Github 
+git status
+
+git add .
+git commit -m "Update HTML and style"
+
+git push origin main
+-->
+
