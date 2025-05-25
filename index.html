@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vocabulary Builder</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+  <script defer src="script.js"></script>
+  <style>
+    /* Only showing relevant CSS changes here */
+    #word-display {
+      width: 85%;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      border: 2px solid black;
+      display: none; /* Keep hidden initially */
+    }
+
+    /* Buttons & Table styling unchanged from your original */
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vocabulary Builder</h1>
+  </header>
+
+  <main>
+    <section id="button-container"></section>
+
+    <!-- Only one word-display container! -->
+    <section id="word-display"></section>
+
+    <button onclick="alert('Test button works!')">Test Button</button>
+  </main>
+</body>
+</html>

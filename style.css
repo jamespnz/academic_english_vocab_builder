@@ -1,0 +1,108 @@
+/* 🌐 Swiss Design-Inspired Aesthetic */
+
+/* 1️⃣ General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', sans-serif; /* Clean, sans-serif typography */
+}
+
+/* 2️⃣ Page Layout */
+body {
+    background-color: #fff; /* White background */
+    color: #000; /* Black text */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+}
+
+/* 3️⃣ Header */
+header h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 3px solid black; /* Sharp typographic separation */
+    padding-bottom: 10px;
+    display: inline-block;
+}
+
+/* 4️⃣ Button Container */
+#button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* 5️⃣ Swiss Grid-Style Buttons */
+button {
+    display: block !important; /* Force visibility */
+    font-size: 1.2em;
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: black;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+}
+
+#word-display {
+    display: none;
+}
+
+
+button:hover {
+    background-color: #444; /* Dark gray hover effect */
+}
+
+/* 6️⃣ Table Styling */
+table {
+    width: 80%;
+    margin: 30px auto;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 2px solid black;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+td {
+    background-color: white;
+    color: black;
+}
+
+/* 7️⃣ Alternating Rows */
+tr:nth-child(even) {
+    background-color: #F0F0F0;
+}
+
+/* 8️⃣ Word Display */
+#word-display {
+    width: 85%;
+    margin: 20px auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    border: 2px solid black;
+    display: none;
+}
+
+/* 9️⃣ Smooth Transitions */
+button, table, #word-display {
+    transition: all 0.3s ease-in-out;
+}
+
