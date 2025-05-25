@@ -3,38 +3,242 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Vocabulary Builder</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-  <script defer src="script.js"></script>
-  <style>
-    /* Only showing relevant CSS changes here */
-    #word-display {
-      width: 85%;
-      margin: 20px auto;
-      padding: 20px;
-      background: white;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 5px;
-      border: 2px solid black;
-      display: none; /* Keep hidden initially */
-    }
-
-    /* Buttons & Table styling unchanged from your original */
-  </style>
-</head>
-<body>
+  <body>
   <header>
     <h1>Vocabulary Builder</h1>
   </header>
 
   <main>
     <section id="button-container"></section>
-
-    <!-- Only one word-display container! -->
     <section id="word-display"></section>
-
-    <button onclick="alert('Test button works!')">Test Button</button>
   </main>
+
+  <!-- scripts follow -->
+
+  <style>
+  /* Swiss Design-Inspired Aesthetic */
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Helvetica Neue', sans-serif;
+  }
+
+  body {
+    background-image: url("demon_slayer.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    min-height: 100vh;
+  }
+
+  header h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 3px solid black;
+    padding-bottom: 10px;
+    display: inline-block;
+  }
+
+  #button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  button {
+    font-size: 1em;
+    width: 100%;
+    max-width: 300px;
+    padding: 10px 20px;
+    margin: 10px auto;
+    background-color: black;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+
+  button:hover {
+    background-color: #444;
+  }
+
+  #word-display {
+    width: 100%;
+    margin: 20px auto;
+    padding: 15px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    border: 2px solid black;
+    display: none;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .flashcard {
+    font-size: 0.95em;
+    border: 1px solid #ccc;
+    margin: 10px;
+    padding: 8px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .flashcard:hover {
+    background-color: #f0f0f0;
+  }
+
+  .flashcard div:first-child {
+    font-size: 1.05em;
+    font-weight: bold;
+  }
+
+  th,
+  td {
+    font-size: 0.9em;
+    padding: 8px;
+  }
+
+  table {
+    width: 80%;
+    margin: 20px auto;
+    border-collapse: collapse;
+  }
+
+  /* 📱 Responsive styles */
+  @media (max-width: 768px) {
+    body {
+      padding: 20px;
+    }
+
+    header h1 {
+      font-size: 1.5em;
+    }
+
+    button {
+      font-size: 1em;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    #word-display {
+      padding: 12px;
+    }
+
+    table {
+      width: 100%;
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    th,
+    td {
+      font-size: 0.85em;
+      padding: 6px;
+    }
+  }
+</style>
+
+
+  <!-- PapaParse -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+  <!-- ✅ Your JavaScript starts here -->
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const wordDisplay = document.getElementById("word-display");
+    const buttonContainer = document.getElementById("button-container");
+
+    if (!wordDisplay || !buttonContainer) {
+      console.error("Required DOM elements not found.");
+      return;
+    }
+
+    wordDisplay.style.display = "none";
+
+    fetch("Vocabulary_List_Final_Cleaned.csv")
+      .then(response => response.text())
+      .then(csvData => {
+        const rawData = Papa.parse(csvData, { header: true }).data;
+        const parsedData = rawData.map(row => ({
+          English: row["English"]?.replace(/^[\s\uFEFF\xA0"]+|[\s"]+$/g, "") || "",
+          Japanese: row["Japanese"]?.replace(/^[\s\uFEFF\xA0"]+|[\s"]+$/g, "") || "",
+          Context: row["context"]?.replace(/^[\s\uFEFF\xA0"]+|[\s"]+$/g, "") || ""
+        })).filter(row => row.English && row.Japanese);
+
+        console.log("CSV Loaded (cleaned):", parsedData);
+
+        const flashcardBtn = document.createElement("button");
+        flashcardBtn.innerText = "Flashcard Mode";
+        flashcardBtn.onclick = () => {
+          displayFlashcards(parsedData);
+        };
+        buttonContainer.appendChild(flashcardBtn);
+      })
+      .catch(error => console.error("Error loading CSV:", error));
+  });
+
+  function displayFlashcards(wordList) {
+    const wordDisplay = document.getElementById("word-display");
+
+    if (!wordList || wordList.length === 0) {
+      wordDisplay.innerHTML = "<p>No data found.</p>";
+      wordDisplay.style.display = "block";
+      return;
+    }
+
+    wordDisplay.innerHTML = "";
+    wordDisplay.style.display = "block";
+
+    wordList.forEach(row => {
+      const card = document.createElement("div");
+      card.className = "flashcard";
+
+      const english = document.createElement("div");
+      english.innerText = row.English;
+      english.style.fontWeight = "bold";
+
+      const japanese = document.createElement("div");
+      japanese.innerText = "Click to reveal";
+      japanese.style.color = "#aaa";
+      japanese.dataset.realValue = row.Japanese;
+      japanese.style.marginTop = "5px";
+
+      japanese.addEventListener("click", () => {
+        japanese.innerText = japanese.dataset.realValue;
+        japanese.style.color = "#000";
+      });
+
+      const context = document.createElement("div");
+      context.innerText = row.Context || "";
+      context.style.fontStyle = "italic";
+      context.style.fontSize = "0.9em";
+      context.style.marginTop = "5px";
+      context.style.color = "#555";
+
+      card.appendChild(english);
+      card.appendChild(japanese);
+      if (row.Context.trim()) {
+  card.appendChild(context);
+}
+      wordDisplay.appendChild(card);
+    });
+
+    console.log("✅ Flashcards added to DOM");
+  }
+  </script>
 </body>
 </html>
