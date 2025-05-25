@@ -231,20 +231,24 @@ document.addEventListener("DOMContentLoaded", function () {
       let activeBatchIndex = null;
 
       flashcardBtn.onclick = () => {
-        if (flashcardsActive) {
-          // ⬅ Return to home
-          wordDisplay.innerHTML = "";
-          wordDisplay.style.display = "none";
-          flashcardBtn.innerText = "Flashcard Mode";
-          flashcardsActive = false;
-          removeDayButtons();
-        } else {
-          // ➡ Activate flashcard mode
-          flashcardBtn.innerText = "Home";
-          flashcardsActive = true;
-          createDayButtons(parsedData);
-        }
-      };
+  if (flashcardsActive) {
+    // 🔙 Return to homepage
+    removeDayButtons();             // ✅ Remove all day buttons
+    removeExistingTable();          // ✅ Remove open table if any
+    flashcardBtn.innerText = "Flashcard Mode"; // ✅ Reset label
+    flashcardsActive = false;
+  } else {
+    // 🚀 Activate flashcard mode
+    flashcardBtn.innerText = "Home";
+    flashcardsActive = true;
+    createDayButtons(parsedData);
+  }
+};
+
+function removeDayButtons() {
+  const dayButtons = document.querySelectorAll(".day-button");
+  dayButtons.forEach(btn => btn.remove());
+}
 
       function removeExistingTable() {
   const existing = document.querySelector(".in-place-table");
