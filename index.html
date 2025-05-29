@@ -10,16 +10,11 @@
   </header>
 
   <main>
-    <section id="button-container"></section>
-    <section id="word-display"></section>
+    <section id="weeks-container"></section>
   </main>
   
-
-  <!-- scripts follow -->
-
   <style>
   /* Swiss Design-Inspired Aesthetic */
-
   * {
     margin: 0;
     padding: 0;
@@ -50,114 +45,154 @@
     border-bottom: 3px solid black;
     padding-bottom: 10px;
     display: inline-block;
+    margin-bottom: 20px;
   }
 
-  #button-container {
+  #weeks-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 20px;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    gap: 10px;
   }
 
-  button {
-    font-size: 1em;
+  .week-container {
     width: 100%;
-    max-width: 300px;
-    padding: 10px 20px;
-    margin: 10px auto;
+    margin-bottom: 10px;
+  }
+
+  .week-button {
+    font-size: 1.2em;
+    width: 100%;
+    padding: 15px 20px;
     background-color: black;
     color: white;
     border: 2px solid white;
     cursor: pointer;
     transition: all 0.3s ease-in-out;
-  }
-
-  button:hover {
-    background-color: #444;
-  }
-
-  #word-display {
-    width: 100%;
-    margin: 20px auto;
-    padding: 12px;
-    background: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     border-radius: 5px;
-    border: 2px solid black;
-    display: block;
-    transition: all 0.3s ease-in-out;
   }
 
-  #word-display.show {
-  display: block;
-}
-
-
-  .flashcard {
-    font-size: 0.95em;
-    border: 1px solid #ccc;
-    margin: 10px;
-    padding: 8px;
-    background-color: #f9f9f9;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  .week-button:hover {
+    background-color: #333;
+    transform: translateY(-2px);
   }
 
-  .flashcard:hover {
-    background-color: #f0f0f0;
+  .week-button.active {
+    background-color: #444;
+    border-color: #fff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
   }
 
-  .flashcard div:first-child {
-    font-size: 1.05em;
-    font-weight: bold;
+  .sets-container {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    animation: slideDown 0.3s ease-out;
   }
 
-  th,
-  td {
-    font-size: 0.9em;
-    padding: 8px;
+  .sets-container.visible {
+    display: flex;
   }
 
-  table {
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .set-button {
+    font-size: 1.1em;
     width: 80%;
+    max-width: 300px;
+    padding: 12px 20px;
+    margin: 8px;
+    background-color: #333;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    border-radius: 5px;
+  }
+
+  .set-button:hover {
+    background-color: #444;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+
+  .week-info {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px;
+    border-radius: 5px;
+    margin: 0 0 15px 0;
+    font-size: 1em;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #ddd;
+  }
+
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .table-wrapper table {
+    min-width: 600px;
+    width: 100%;
     margin: 20px auto;
     border-collapse: collapse;
   }
 
-  .table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.table-wrapper table {
-  min-width: 600px; /* or 100% if all content fits naturally */
-}
-
-
-  @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  th, td {
+    font-size: 0.9em;
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
   }
 
- .in-place-table {
-  width: 100%;
-  margin: 20px auto;
-  padding: 15px;
-  background: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  border: 2px solid black;
-  animation: fadeIn 0.7s ease-in-out;
-}
-  
-  /* 📱 Responsive styles */
+  th {
+    background-color: #333;
+    color: white;
+  }
+
+  .in-place-table {
+    width: 100%;
+    margin: 20px auto;
+    padding: 15px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    border: 2px solid black;
+    animation: fadeIn 0.7s ease-in-out;
+  }
+
+  .close-btn {
+    text-align: right;
+    font-size: 1em;
+    color: #555;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: color 0.2s ease-in-out;
+  }
+
+  .close-btn:hover {
+    color: #c00;
+  }
+
   @media (max-width: 768px) {
     body {
       padding: 20px;
@@ -167,206 +202,196 @@
       font-size: 1.5em;
     }
 
-    button {
-      font-size: 1em;
+    .week-button, .set-button {
       width: 100%;
-      max-width: 100%;
+      font-size: 0.9em;
+      padding: 10px 15px;
     }
 
-   
-
-
-    table {
-      width: 100%;
-      display: block;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    th,
-    td {
-      font-size: 0.85em;
-      padding: 6px;
+    .sets-container {
+      padding: 10px;
     }
   }
-
-  .close-btn {
-  text-align: right;
-  font-size: 1em;
-  color: #555;
-  cursor: pointer;
-  margin-bottom: 10px;
-  transition: color 0.2s ease-in-out;
-}
-
-.close-btn:hover {
-  color: #c00;
-}
-
-</style>
-
+  </style>
 
   <!-- PapaParse -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
   <!-- ✅ Your JavaScript starts here -->
- <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const wordDisplay = document.getElementById("word-display");
-  const buttonContainer = document.getElementById("button-container");
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const weeksContainer = document.getElementById("weeks-container");
+    let activeWeekButton = null;
+    let activeSetIndex = null;
 
-  if (!wordDisplay || !buttonContainer) {
-    console.error("Required DOM elements not found.");
-    return;
-  }
+    // Load CSV data
+    fetch("Vocabulary_List_Final_Cleaned.csv")
+      .then(response => response.text())
+      .then(csvData => {
+        const rawData = Papa.parse(csvData, { header: true }).data;
+        const vocabularyData = rawData
+          .map(row => ({
+            English: row["English"]?.trim() || "",
+            Japanese: row["Japanese"]?.trim() || "",
+            Context: row["context"]?.trim() || ""
+          }))
+          .filter(row => row.English && row.Japanese);
 
-  wordDisplay.style.display = "none";
+        console.log("CSV Loaded (cleaned):", vocabularyData);
+        createWeekButtons(vocabularyData);
+      })
+      .catch(error => {
+        console.error("Error loading CSV:", error);
+        weeksContainer.innerHTML = '<p style="color: red;">Error loading vocabulary data. Please refresh the page.</p>';
+      });
 
-  fetch("Vocabulary_List_Final_Cleaned.csv")
-    .then(response => response.text())
-    .then(csvData => {
-      const rawData = Papa.parse(csvData, { header: true }).data;
-      const parsedData = rawData.map(row => ({
-        English: row["English"]?.trim() || "",
-        Japanese: row["Japanese"]?.trim() || "",
-        Context: row["context"]?.trim() || ""
-      })).filter(row => row.English && row.Japanese);
+    function createWeekButtons(data) {
+      if (!data || data.length === 0) return;
 
-      console.log("CSV Loaded (cleaned):", parsedData);
+      const setsPerWeek = 5;
+      const wordsPerSet = 10;
+      const totalSets = Math.floor(data.length / wordsPerSet);
+      const totalWeeks = Math.ceil(totalSets / setsPerWeek);
 
-      const flashcardBtn = document.createElement("button");
-      flashcardBtn.innerText = "Flashcard Mode";
-      buttonContainer.appendChild(flashcardBtn);
+      for (let weekNum = 0; weekNum < totalWeeks; weekNum++) {
+        const weekContainer = document.createElement("div");
+        weekContainer.className = "week-container";
 
-      let flashcardsActive = false;
-      let activeBatchIndex = null;
+        const weekButton = document.createElement("button");
+        weekButton.innerText = `Week ${weekNum + 1}`;
+        weekButton.classList.add("week-button");
 
-      flashcardBtn.onclick = () => {
-  if (flashcardsActive) {
-    // 🔙 Return to homepage
-    removeDayButtons();             // ✅ Remove all day buttons
-    removeExistingTable();          // ✅ Remove open table if any
-    flashcardBtn.innerText = "Flashcard Mode"; // ✅ Reset label
-    flashcardsActive = false;
-  } else {
-    // 🚀 Activate flashcard mode
-    flashcardBtn.innerText = "Home";
-    flashcardsActive = true;
-    createDayButtons(parsedData);
-  }
-};
+        const setsContainer = document.createElement("div");
+        setsContainer.className = "sets-container";
 
-function removeDayButtons() {
-  const dayButtons = document.querySelectorAll(".day-button");
-  dayButtons.forEach(btn => btn.remove());
-}
+        weekContainer.appendChild(weekButton);
+        weekContainer.appendChild(setsContainer);
+        weeksContainer.appendChild(weekContainer);
 
-      function removeExistingTable() {
-  const existing = document.querySelector(".in-place-table");
-  if (existing) {
-    existing.remove();
-  }
-}
+        weekButton.onclick = () => {
+          const allSetsContainers = document.querySelectorAll('.sets-container');
+          allSetsContainers.forEach(container => {
+            if (container !== setsContainer) {
+              container.classList.remove('visible');
+            }
+          });
 
-      function createDayButtons(data) {
-  const batchSize = 10;
-  const totalBatches = Math.floor(data.length / batchSize);
+          const allWeekButtons = document.querySelectorAll('.week-button');
+          allWeekButtons.forEach(button => {
+            if (button !== weekButton) {
+              button.classList.remove('active');
+            }
+          });
 
-  for (let i = 0; i < totalBatches; i++) {
-    const batch = data.slice(i * batchSize, (i + 1) * batchSize);
-    const dayBtn = document.createElement("button");
-    dayBtn.innerText = `Set ${i + 1}`;
-    dayBtn.classList.add("day-button");
+          weekButton.classList.toggle('active');
+          setsContainer.classList.toggle('visible');
 
-    dayBtn.onclick = () => {
-      if (activeBatchIndex === i) {
-        // Close the table
-        removeExistingTable();
-        activeBatchIndex = null;
-      } else {
-        // Close any existing table
-        removeExistingTable();
-
-        // Create and insert new table
-        const newDisplay = document.createElement("div");
-        newDisplay.id = "word-display";
-        newDisplay.className = "in-place-table";
-
-        // 🔽 Add Close Button
-const closeBtn = document.createElement("div");
-closeBtn.innerText = "❌ Close";
-closeBtn.className = "close-btn";
-closeBtn.onclick = () => {
-  newDisplay.remove();
-  activeBatchIndex = null;
-};
-newDisplay.appendChild(closeBtn);
-
-// Table
-const table = createTable(batch);
-newDisplay.appendChild(table);
-
-        
-        // Insert table directly after this button
-        dayBtn.insertAdjacentElement("afterend", newDisplay);
-        activeBatchIndex = i;
-
-        // Scroll smoothly into view
-        newDisplay.scrollIntoView({ behavior: "smooth" });
+          if (setsContainer.classList.contains('visible')) {
+            createSetButtons(data, weekNum, setsPerWeek, wordsPerSet, setsContainer);
+            weekButton.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        };
       }
-    };
+    }
 
-    buttonContainer.appendChild(dayBtn);
-  }
-}
+    function createSetButtons(data, weekIndex, setsPerWeek, wordsPerSet, container) {
+      container.innerHTML = '';
+      
+      const weekInfo = document.createElement("div");
+      weekInfo.className = "week-info";
+      weekInfo.innerHTML = "Study one set each day of the week (Monday to Friday)";
+      container.appendChild(weekInfo);
 
+      const startSetIndex = weekIndex * setsPerWeek;
+      const endSetIndex = Math.min(startSetIndex + setsPerWeek, Math.floor(data.length / wordsPerSet));
 
-      function createTable(wordList) {
-  const wrapper = document.createElement("div");
-  wrapper.className = "table-wrapper";
+      for (let setIndex = startSetIndex; setIndex < endSetIndex; setIndex++) {
+        const setButton = document.createElement("button");
+        setButton.innerText = `Set ${setIndex + 1}`;
+        setButton.classList.add("set-button");
 
-  const table = document.createElement("table");
+        setButton.onclick = () => {
+          if (activeSetIndex === setIndex) {
+            removeExistingTable(container);
+            activeSetIndex = null;
+          } else {
+            removeExistingTable(container);
+            displaySet(data, setIndex, wordsPerSet, container);
+            activeSetIndex = setIndex;
+          }
+        };
 
-  const headerRow = document.createElement("tr");
-  ["English", "Japanese", "Context"].forEach(header => {
-    const th = document.createElement("th");
-    th.innerText = header;
-    headerRow.appendChild(th);
+        container.appendChild(setButton);
+      }
+    }
+
+    function displaySet(data, setIndex, wordsPerSet, container) {
+      const startIndex = setIndex * wordsPerSet;
+      const setData = data.slice(startIndex, startIndex + wordsPerSet);
+
+      const newDisplay = document.createElement("div");
+      newDisplay.className = "in-place-table";
+
+      const closeBtn = document.createElement("div");
+      closeBtn.innerText = "❌ Close";
+      closeBtn.className = "close-btn";
+      closeBtn.onclick = () => {
+        newDisplay.remove();
+        activeSetIndex = null;
+      };
+      newDisplay.appendChild(closeBtn);
+
+      const table = createTable(setData);
+      newDisplay.appendChild(table);
+
+      container.appendChild(newDisplay);
+      newDisplay.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function createTable(wordList) {
+      const wrapper = document.createElement("div");
+      wrapper.className = "table-wrapper";
+
+      const table = document.createElement("table");
+
+      const headerRow = document.createElement("tr");
+      ["English", "Japanese", "Context"].forEach(header => {
+        const th = document.createElement("th");
+        th.innerText = header;
+        headerRow.appendChild(th);
+      });
+      table.appendChild(headerRow);
+
+      wordList.forEach(row => {
+        const tr = document.createElement("tr");
+
+        const tdEnglish = document.createElement("td");
+        tdEnglish.innerText = row.English;
+        tr.appendChild(tdEnglish);
+
+        const tdJapanese = document.createElement("td");
+        tdJapanese.innerText = row.Japanese;
+        tr.appendChild(tdJapanese);
+
+        const tdContext = document.createElement("td");
+        tdContext.innerText = row.Context || "";
+        tr.appendChild(tdContext);
+
+        table.appendChild(tr);
+      });
+
+      wrapper.appendChild(table);
+      return wrapper;
+    }
+
+    function removeExistingTable(container) {
+      const existing = container.querySelector(".in-place-table");
+      if (existing) {
+        existing.remove();
+      }
+    }
   });
-  table.appendChild(headerRow);
-
-  wordList.forEach(row => {
-    const tr = document.createElement("tr");
-
-    const tdEnglish = document.createElement("td");
-    tdEnglish.innerText = row.English;
-    tr.appendChild(tdEnglish);
-
-    const tdJapanese = document.createElement("td");
-    tdJapanese.innerText = row.Japanese;
-    tr.appendChild(tdJapanese);
-
-    const tdContext = document.createElement("td");
-    tdContext.innerText = row.Context || "";
-    tr.appendChild(tdContext);
-
-    table.appendChild(tr);
-  });
-
-  wrapper.appendChild(table);
-  return wrapper;
-}
-
-
-    })
-    .catch(error => console.error("Error loading CSV:", error));
-});
-
-console.log("✅ Table is being added to DOM");
-
-</script>
-
-
+  </script>
 </body>
 </html>
 
